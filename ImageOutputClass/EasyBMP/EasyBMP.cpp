@@ -423,7 +423,6 @@ bool BMP::SetSize(int NewWidth , int NewHeight )
 
 bool BMP::WriteToFile( const char* FileName )
 {
- std::cout <<"Starting to print ..."<<std::endl;
  using namespace std;
  if( !EasyBMPcheckDataSize() )
  {

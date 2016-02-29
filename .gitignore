@@ -1,4 +1,3 @@
-.gitignore
 .idea
 ImageOutputClass/CMakeLists.txt
 ImageOutputClass/.idea
