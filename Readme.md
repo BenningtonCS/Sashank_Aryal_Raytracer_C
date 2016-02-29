@@ -1,3 +1,3 @@
 #Scripting graphics
 
-##1. Image Output Class : First Assignment ##
+**1. Image Output Class : First Assignment **
