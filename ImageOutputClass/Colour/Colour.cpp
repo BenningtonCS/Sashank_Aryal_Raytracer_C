@@ -4,9 +4,9 @@
 
 #include <math.h>
 #include <cmath>
-#include "Color.h"
+#include "Colour.h"
 
-uint8_t* Color::convertToUint8() {
+uint8_t*Colour::convertToUint8() {
     uint8_t convertedColor[] = {
             getRedInt(),
             getGreenInt(),
@@ -16,34 +16,34 @@ uint8_t* Color::convertToUint8() {
     return convertedColor;
 }
 
-const float Color::getRed() {
+const float Colour::getRed() {
     return this->rgba[0];
 }
 
-const float Color::getGreen() {
+const float Colour::getGreen() {
     return this->rgba[1];
 }
 
-const float Color::getBlue() {
+const float Colour::getBlue() {
     return this->rgba[2];
 }
 
-const float Color::getAlpha() {
+const float Colour::getAlpha() {
     return this->rgba[3];
 }
 
-const uint8_t Color::getRedInt() {
+const uint8_t Colour::getRedInt() {
     return (uint8_t)(floor(pow(this->rgba[0],(1/2.2))*255));
 }
 
-const uint8_t Color::getGreenInt() {
+const uint8_t Colour::getGreenInt() {
     return (uint8_t)(floor(pow(this->rgba[1],(1/2.2))*255));
 }
 
-const uint8_t Color::getBlueInt() {
+const uint8_t Colour::getBlueInt() {
     return (uint8_t)(floor(pow(this->rgba[2],(1/2.2))*255));
 }
 
-const uint8_t Color::getAlphaInt() {
+const uint8_t Colour::getAlphaInt() {
     return (uint8_t)(floor(pow(this->rgba[3],(1/2.2))*255));
 }

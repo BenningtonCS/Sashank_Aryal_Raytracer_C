@@ -3,23 +3,19 @@
 //
 
 #include "Image.h"
-#include "EasyBMP/EasyBMP.h"
-void Image::drawColoredBMP(int width, int height,Color clr[], const char* filename) {
+#include "../EasyBMP/EasyBMP.h"
+void Image::drawColoredBMP(int width, int height, Colour clr, const char* filename) {
     BMP myImage;
     myImage.SetSize(width,height);
     myImage.SetBitDepth(32);
     for (int i=0;i<width;i++){
         for (int j=0;j<height;j++){
-            //convert to uint
-            myImage(i,j)->Red=clr[i];
-            myImage(i,j)->Green=colors[1];
-            myImage(i,j)->Blue=colors[2];
-            myImage(i,j)->Alpha=colors[3];
+            myImage(i,j)->Red = clr.getRedInt();
+            myImage(i,j)->Green = clr.getGreenInt();
+            myImage(i,j)->Blue = clr.getBlueInt();
+            myImage(i,j)->Alpha = clr.getAlphaInt();
         }
     }
-    std::cout <<"Printing to file..."<<filename<<std::endl;
-    myImage.WriteToFile(filename);
-    std::cout <<"Done printing to file..."<<filename<<std::endl;
 }
 void Image::convertToGrayscale(const char *inputFile, const char *outputFile) {
         BMP myImage;

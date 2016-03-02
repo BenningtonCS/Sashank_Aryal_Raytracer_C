@@ -7,13 +7,13 @@
 
 #include <stdint-gcc.h>
 
-class Color {
+class Colour {
 private:
     float rgba[4];
 public:
-    Color(float _red, float _green, float _blue, float _alpha=1.0):
+    Colour(float _red, float _green, float _blue, float _alpha=1.0):
             rgba{_red, _green, _blue, _alpha} {};
-    Color():
+    Colour():
             rgba{1.0,1.0,1.0,1.0} {};
 
     const float getRed();
@@ -25,7 +25,6 @@ public:
     const uint8_t getGreenInt();
     const uint8_t getBlueInt();
     const uint8_t getAlphaInt();
-
 
     uint8_t * convertToUint8();
 

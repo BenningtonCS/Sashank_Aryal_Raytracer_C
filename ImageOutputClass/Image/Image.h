@@ -14,11 +14,11 @@
 #define ADVANCEDSCRIPTING2_IMAGEOUTPUT_H
 
 #include <stdint.h>
-#include "Color.h"
+#include "../Colour/Colour.h"
 
 class Image {
 public:
-    static void drawColoredBMP(int width, int height, Color clr[], const char *filename);
+    static void drawColoredBMP(int width, int height, Colour clr, const char *filename);
     static void convertToGrayscale(const char *inputFile, const char *outputFile);
 
 
