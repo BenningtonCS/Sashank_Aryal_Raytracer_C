@@ -9,10 +9,7 @@
  *      Description: It draws a 32 bit bitmap image of specified width and height and color.
  * 2. convertToGrayscale
  *      Description: It converts a bit map image to grayscale formal
- *
- *
- *
- */
+  */
 #ifndef ADVANCEDSCRIPTING2_IMAGEOUTPUT_H
 #define ADVANCEDSCRIPTING2_IMAGEOUTPUT_H
 
