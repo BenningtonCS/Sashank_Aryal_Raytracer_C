@@ -1,12 +1,16 @@
 #include <iostream>
 #include "Image.h"
+#include "Color.h"
 
 
 using namespace std;
 
 int main() {
-    uint8_t colors[]={200,100,25,1};
-    Image::drawColoredBMP(300,300,colors,"myColor2.bmp");
+    int width = 600;
+    int height = 800;
+    Color test[width*height];
+    Image::drawColoredBMP(300,300,colors,"testColor.bmp");
     Image::convertToGrayscale("smile.bmp","smile2.bmp");
+     */
     return 0;
 }

@@ -4,7 +4,7 @@
 
 #include "Image.h"
 #include "EasyBMP/EasyBMP.h"
-void Image::drawColoredBMP(int width, int height,uint8_t colors[4], const char* filename) {
+void Image::drawColoredBMP(int width, int height,Color clr[], const char* filename) {
     BMP myImage;
     myImage.SetSize(width,height);
     myImage.SetBitDepth(32);
