@@ -18,10 +18,6 @@ using namespace Vector;
 class Plane: public Shape {
 private:
     Vector3D normalOrientationVector;
-    /*DistanceFromOrigin will suffice because the plane will be infinite in the x-z dimension . The normal defines the orientation of the plane
-    And distanceFromOrigin defines how far the plane is in Y-direction.
-    double distanceFromOrigin;
-     */
     Vector3D pointOnPlane;
     ColorRGB colorOfPlane;
 public:
@@ -31,7 +27,7 @@ public:
     //Getters
     const Vector3D &getNormalOrientationVector() const;
     const Vector3D &getPointOnPlane() const;
-    ColorRGB const getColor()  override;
+    const ColorRGB getColor();
 
     //Other methods
     const double rayIntersectionDistance(Ray r);

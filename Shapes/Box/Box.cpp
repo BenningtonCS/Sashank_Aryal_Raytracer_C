@@ -9,12 +9,9 @@
 Box::Box(const Vector3D &minimumExtent, const Vector3D &maximumExtent, ColorRGB color, float ambience):Shape(ambience) {
     bounds[0] = minimumExtent;
     bounds[1] = maximumExtent;
-    boxColor = color;
+    colorOfBox = color;
 }
 
-const ColorRGB Box::getColor() {
-    return this->boxColor;
-}
 
 const double Box::rayIntersectionDistance(Ray r) {
     double tmin, tmax, tymin, tymax, tzmin, tzmax;
@@ -39,12 +36,12 @@ const double Box::rayIntersectionDistance(Ray r) {
     if ((tmin > tzmax) || (tzmin > tmax)) return -1;
     if (tzmin > tmin) tmin = tzmin;
     if (tzmax < tmax) tmax = tzmax;
-
     return tmin > tmax ? tmax : tmin;
 }
 
 const Vector3D Box::getNormalAt(Vector3D point) {
     const double EPSILON = 0.00001;
+
     if (std::abs(point.getX() - bounds[0].getX()) < EPSILON) return Vector3D(-1,0,0);
 
     if (std::abs(point.getX() - bounds[1].getX()) < EPSILON) return Vector3D(1,0,0);
@@ -57,8 +54,10 @@ const Vector3D Box::getNormalAt(Vector3D point) {
 
     if (std::abs(point.getZ() - bounds[1].getZ()) < EPSILON) return Vector3D(0,0,1);
 
-
-
-
-
 }
+
+
+const ColorRGB Box::getColor() {
+    return colorOfBox;
+}
+

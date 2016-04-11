@@ -18,7 +18,6 @@ private:
     Vector3D centerOfDisk;
     double radiusOfDisk;
     ColorRGB colorOfDisk;
-
 public:
 
     //Constructor
@@ -26,11 +25,11 @@ public:
          const ColorRGB &colorOfDisk, float ambience) : normalOrientationVector(normalOrientationVector), centerOfDisk(centerOfDisk),
                                         radiusOfDisk(radiusOfDisk), colorOfDisk(colorOfDisk), Shape(ambience) { }
 
-    const ColorRGB getColor();
     const double rayIntersectionDistance(Ray r);
     const Vector3D getNormalAt(Vector3D);
     Vector3D getCenterOfDisk();
     double getRadiusOfDisk();
+    const ColorRGB getColor();
 };
 
 

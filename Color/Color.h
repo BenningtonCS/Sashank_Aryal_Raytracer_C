@@ -11,7 +11,7 @@
 
 
 
-struct ColorRGB{
+class ColorRGB{
 private:
     double r;
     double g;
@@ -21,13 +21,18 @@ public:
 
     //Constructor
     ColorRGB(const double r, const double g, const double b, const double a){
-        this->r = r > 1 ? 1 : r;
-        this->g = g > 1 ? 1 : g;
-        this->b = b > 1 ? 1 : b;
-        this->a = a > 1 ? 1 : a;
+        this->r = r;
+        this->g = g;
+        this->b = b;
+        this->a = a;
     }
 
-    ColorRGB(){};
+    ColorRGB(){
+        r = 0;
+        g = 0;
+        b = 0;
+        a = 0;
+    };
 
     ~ColorRGB(){
 
@@ -84,10 +89,10 @@ inline ColorRGB operator*(const double s, const ColorRGB &c){
 }
 
 inline ColorRGB operator/(const ColorRGB &c1, double constant){
-    return ColorRGB(c1.getR() / constant, c1.getG() / constant, c1.getB() / constant, c1.getA());
+    return ColorRGB(c1.getR() / constant, c1.getG() / constant, c1.getB() / constant, c1.getA() / constant);
 }
 
-inline ColorRGB operator+(double constant , const ColorRGB &c){
-    return ColorRGB(constant + c.getR(), constant + c.getG(), constant + c.getB(), constant + c.getA());
-}
+//inline ColorRGB operator+(double constant , const ColorRGB &c){
+  //  return ColorRGB(constant + c.getR(), constant + c.getG(), constant + c.getB(), constant + c.getA());
+//}
 #endif //RAYTRACERC_COLOR_H

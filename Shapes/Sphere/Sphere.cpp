@@ -7,16 +7,16 @@
 #include <cmath>
 #include <assert.h>
 
-Sphere::Sphere():Shape(0) {
+    Sphere::Sphere():Shape(0) {
     radius = 1;
     positionCenter = Vector3D(0,0,0);
-    color = ColorRGB(0.5,0.5,0.5,0.5);
+        color = ColorRGB(0.5,0.5,0.5,1);
 }
 
-Sphere::Sphere(double radius, Vector3D position, ColorRGB color, float ambience):Shape(ambience) {
+Sphere::Sphere(double radius, Vector3D position, ColorRGB _color, float ambience):Shape(ambience) {
     this-> radius = radius;
     this-> positionCenter = position;
-    this-> color = color;
+    this->color = _color;
 }
 
 const double Sphere::getRadius() {
@@ -26,10 +26,6 @@ const double Sphere::getRadius() {
 
 const Vector3D Sphere::getPosition() {
     return positionCenter;
-}
-
-ColorRGB const Sphere::getColor(){
-    return color;
 }
 
 
@@ -55,3 +51,10 @@ const Vector3D Sphere::getNormalAt(Vector3D point) {
     //normal always points away from the center of the sphere
     return (point - positionCenter).unitVector();
 }
+
+
+const ColorRGB Sphere::getColor() {
+    return color;
+}
+
+

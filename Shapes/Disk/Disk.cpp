@@ -5,9 +5,6 @@
 #include "Disk.h"
 #include "../Plane/Plane.h"
 
-const ColorRGB Disk::getColor() {
-    return colorOfDisk;
-}
 
 const double Disk::rayIntersectionDistance(Ray r) {
     //Check if the normal of the disk is parallel to the ray by computing the dot product of ray and normal of disk.
@@ -22,8 +19,10 @@ const double Disk::rayIntersectionDistance(Ray r) {
 
     Vector3D pointOfIntersectionInPlane = r.getOrigin() + diskRayIntersectionDistance * r.getDirection();
     if ((pointOfIntersectionInPlane - getCenterOfDisk()).magnitude() <= getRadiusOfDisk()){
+        delete p;
         return diskRayIntersectionDistance;
     }
+    delete p;
     return -1;
 
 }
@@ -39,3 +38,10 @@ Vector3D Disk::getCenterOfDisk() {
 double Disk::getRadiusOfDisk() {
     return radiusOfDisk;
 }
+
+
+const ColorRGB Disk::getColor() {
+    return colorOfDisk;
+}
+
+

@@ -19,9 +19,6 @@ const Vector3D &Plane::getNormalOrientationVector() const {
 const Vector3D &Plane::getPointOnPlane() const {
     return this->pointOnPlane;
 }
-ColorRGB const Plane::getColor(){
-    return this->colorOfPlane;
-}
 
 const double Plane::rayIntersectionDistance(Ray r){
     //If the dot product of ray direction and normal of plane is zero, the ray is parallel to the plane and they never intersect
@@ -52,3 +49,9 @@ const double Plane::rayIntersectionDistance(Ray r){
 const Vector3D Plane::getNormalAt(Vector3D point) {
     return normalOrientationVector;
 }
+
+
+const ColorRGB Plane::getColor() {
+    return this->colorOfPlane;
+}
+

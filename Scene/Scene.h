@@ -15,14 +15,15 @@
 #define COLOR_GREEN ColorRGB(0,1,0,1)
 #define ORIGIN Vector3D(0,0,0)
 #define TOPRIGHTCORNER Vector3D(30,30,0)
-#define BACKGROUNDCOLOR ColorRGB(0,0,0,0)
+#define BACKGROUNDCOLOR ColorRGB(0.02,0.002,0.02,0)
 
 #include "../Vector3D/Vector3D.h"
 #include "../Camera/Camera.h"
 #include "../Lights/Light.h"
 #include "../Shapes/Sphere/Sphere.h"
-#include <vector>
+
 #include <memory>
+#include <vector>
 
 class Scene{
 private:

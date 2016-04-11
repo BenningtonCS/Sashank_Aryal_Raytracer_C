@@ -14,13 +14,13 @@ class Box: public Shape {
 private:
     //Two bounds representing minimum and maximum extent of the box
     Vector3D bounds[2];
-    ColorRGB boxColor;
+    ColorRGB colorOfBox;
 
 public:
     Box(const Vector3D &minimumExtent, const Vector3D &maximumExtent, ColorRGB color, float ambience);
-    const ColorRGB getColor();
     const double rayIntersectionDistance(Ray r);
     const Vector3D getNormalAt(Vector3D point);
+    const ColorRGB getColor();
 };
 
 

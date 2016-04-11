@@ -4,6 +4,7 @@
 
 #include "Algebra.h"
 #include <algorithm>
+#include <ctime>
 
 #define LARGEVALUE 1e10
 
@@ -43,4 +44,9 @@ int Algebra::sign(double x)
 
 double Algebra::deg2rad (double degrees) {
     return degrees * 4.0 * atan (1.0) / 180.0;
+}
+
+
+double Algebra::getRandomBetweenZeroAndOne() {
+    return (double)rand()/RAND_MAX;
 }

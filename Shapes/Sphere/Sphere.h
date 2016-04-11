@@ -19,13 +19,13 @@ private:
 public:
     //Constructors
     Sphere();
-    Sphere(double radius, Vector3D positionCenter, ColorRGB color, float ambience);
+    Sphere(double radius, Vector3D positionCenter, ColorRGB _color, float ambience);
 
     //Getters and setters
     const double getRadius();
     const Vector3D getPosition();
-    const ColorRGB getColor();
     const double rayIntersectionDistance(Ray r);
     const Vector3D getNormalAt(Vector3D point);
+    const ColorRGB getColor();
 };
 #endif //RAYTRACERC_SPHERE_H
