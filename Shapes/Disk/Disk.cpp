@@ -28,7 +28,7 @@ const double Disk::rayIntersectionDistance(Ray r) {
 }
 
 const Vector3D Disk::getNormalAt(Vector3D) {
-    return normalOrientationVector;
+    return normalOrientationVector.unitVector();
 }
 
 Vector3D Disk::getCenterOfDisk() {

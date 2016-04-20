@@ -31,8 +31,28 @@ public:
 
     //Other methods
     const double rayIntersectionDistance(Ray r);
-    const Vector3D getNormalAt(Vector3D point);         //Irrespective of where the ray intersects the plane, the normal vector is going to be the same
+    const Vector3D getNormalAt(Vector3D point);
 
+
+    //Irrespective of where the ray intersects the plane, the normal vector is going to be the same
+
+    
+    //Transformation methods
+    const void translateBy(Vector3D coordinate)  {
+        return;
+    }
+
+    const void scaleBy(Vector3D coordinate)  {
+        return;
+    }
+
+    const void scaleUniformBy(double factor)  {
+        return;
+    }
+
+    const void rotateBy(Vector3D d)  {
+        return;
+    }
 };
 
 

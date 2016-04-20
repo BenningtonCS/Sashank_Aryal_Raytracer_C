@@ -21,15 +21,16 @@ class Camera {
 private:
     Vector3D position, u, v, w;
     double fov;
-    int numberOfSamples;
     SamplingTypes typeOfSampling;
+    int numberOfSamples;
     int heightOfScene;
     int widthOfScene;
+
+    double apertureRadius;                            //determines how blur the objects out of focus are
+    double focalLength;                             //determines the z-distance in view space which objects will be in focus
+    bool depthOfFieldEnabled;
 public:
     //Constructors
-    Camera() {
-        useSampling(SamplingTypes::RANDOM, 1);
-    }
 
     Camera(const Vector3D &position, const Vector3D &lookAtPoint);
 
@@ -41,14 +42,18 @@ public:
 
     void render(const int width, const int height);
 
-    ColorRGB getColorAt(Vector3D intersectionPosition, int indexOfIntersectionPosition);
+    ColorRGB getColorAt(const Vector3D &intersectionPosition, int indexOfIntersectionPosition);
 
-    Vector3D convertCameraToWorldCoordinates(Vector3D);
+    Vector3D convertCameraToWorldCoordinates(const Vector3D &v);
 
-    ColorRGB getColorFromRay(Ray r);
+    ColorRGB getColorFromRay(const Ray &r);
 
     ColorRGB getFinalColorFromRandomSampling(int i, int j);
 
     ColorRGB getFinalColorFromJitteredSampling(int i, int j, std::vector<double> combinationsOfOffsets);
+
+    void useDepthOfField(const double apertureSize, const Vector3D& focalPoint);
+
+    Vector3D randomizeOriginXY();
 };
 #endif //RAYTRACERC_CAMERA_H

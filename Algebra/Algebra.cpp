@@ -47,6 +47,8 @@ double Algebra::deg2rad (double degrees) {
 }
 
 
-double Algebra::getRandomBetweenZeroAndOne() {
-    return (double)rand()/RAND_MAX;
+double Algebra::getRandomBetween(double min, double max) {
+    if (min > max) std::swap(min, max);
+    return min + ((double)rand() * (max - min) /RAND_MAX);
 }
+

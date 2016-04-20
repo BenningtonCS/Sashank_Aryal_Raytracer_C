@@ -13,7 +13,7 @@ public:
     static const int getKeyOfLeastValueFromMap(std::map<int, double>  m);
     static const double floatDivision(const double a, const double b);
     static double deg2rad (double degrees);
-    static double getRandomBetweenZeroAndOne();
+    static double getRandomBetween(double min, double max);
 private:
     static int sign(double x);
 };

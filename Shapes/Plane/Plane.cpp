@@ -47,7 +47,7 @@ const double Plane::rayIntersectionDistance(Ray r){
 }
 
 const Vector3D Plane::getNormalAt(Vector3D point) {
-    return normalOrientationVector;
+    return normalOrientationVector.unitVector();
 }
 
 
