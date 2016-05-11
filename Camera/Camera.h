@@ -55,5 +55,9 @@ public:
     void useDepthOfField(const double apertureSize, const Vector3D& focalPoint);
 
     Vector3D randomizeOriginXY();
+
+    Vector3D inverseTransformPoint(const Vector3D & point, int shapeIndex);
+
+    Vector3D inverseTransformDirection(const Vector3D & direction, int shapeIndex);
 };
 #endif //RAYTRACERC_CAMERA_H

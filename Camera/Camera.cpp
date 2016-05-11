@@ -109,17 +109,28 @@ ColorRGB Camera::getColorFromRay(const Ray &r){
     // If more than one object is hit, the one with the intersection point closer to the observer commands the pixel color,
     int numberOfObjectsToRender = (int) Scene::shapes.size();
     int lowestTposition = 0;
+
     double leastValueOfT = 100000000;
+    Ray intersectingTransformedRay = r;
     for (int l = 0; l < numberOfObjectsToRender; ++l) {
-        double intersectionDistance = Scene::shapes[l]->rayIntersectionDistance(r);
+        //Convert ray to the new coordinate space
+        Vector3D newRayOrigin = inverseTransformPoint(r.getOrigin(), l);
+        Vector3D newRayDirection = inverseTransformDirection(r.getDirection(), l);
+        Ray newRay(newRayOrigin, newRayDirection);
+        intersectingTransformedRay = newRay;
+        double intersectionDistance = Scene::shapes[l]->rayIntersectionDistance(newRay);
         if (intersectionDistance > 0.000001 && intersectionDistance < leastValueOfT) {  //0.000001 for accuracy purpose
             leastValueOfT = intersectionDistance;
             lowestTposition = l;
         }
     }
-    Vector3D intersectingPosition = r.getOrigin() + leastValueOfT * r.getDirection();
-    if ( leastValueOfT < 100000000)
-        return getColorAt(intersectingPosition, lowestTposition);
+
+    if ( leastValueOfT < 100000000) {
+        Vector3D intersectingPosition = intersectingTransformedRay.getOrigin() + leastValueOfT * intersectingTransformedRay.getDirection();
+        //find P in another coordinate system
+        Vector3D realIntersectingPosition = Scene::shapes[lowestTposition]->getTransformationMatrix() * intersectingPosition;
+        return getColorAt(realIntersectingPosition, lowestTposition);
+    }
     return ColorRGB();
 }
 
@@ -146,7 +157,7 @@ ColorRGB Camera::getColorAt(const Vector3D &intersectionPosition, int indexOfInt
         if (isShadowed) continue;                                   // Check if the other light falls on the currently shadowed reason
                                                                     // , in which case I'd not want a shadow
         float diffuseReflectance = 1 - Scene::shapes[indexOfIntersectionPosition]->getAmbience();
-        Vector3D normalAtIntersectionPosition = Scene::shapes[indexOfIntersectionPosition]->getNormalAt(intersectionPosition);
+        Vector3D normalAtIntersectionPosition = Scene::shapes[indexOfIntersectionPosition]->getInverseTransformationMatrix() * Scene::shapes[indexOfIntersectionPosition]->getNormalAt(intersectionPosition);
         ColorRGB colorOfCurrentLight = Scene::lights[i]->getColorOfLight();
         double intensityOfCurrentLight = Scene::lights[i]->getLightIntensity();
         double cosineAngle = DotProduct(normalAtIntersectionPosition, directionOfLight);
@@ -156,6 +167,16 @@ ColorRGB Camera::getColorAt(const Vector3D &intersectionPosition, int indexOfInt
     }
     return  finalColor + Scene::shapes[indexOfIntersectionPosition]->getAmbience() * colorOfObject;
 }
+
+
+Vector3D Camera::inverseTransformPoint(const Vector3D &point, int shapeIndex) {
+    return Scene::shapes[shapeIndex]->getInverseTransformationMatrix() * point;
+}
+
+Vector3D Camera::inverseTransformDirection(const Vector3D &direction, int shapeIndex) {
+    return Scene::shapes[shapeIndex]->getInverseTransformationMatrix() * direction;
+}
+
 
 Vector3D Camera::getCameraPosition() {
     return position;

@@ -31,22 +31,7 @@ public:
     double getRadiusOfDisk();
     const ColorRGB getColor();
 
-    //Transformation methods
-    const void translateBy(Vector3D coordinate)  {
-        return;
-    }
 
-    const void scaleBy(Vector3D coordinate)  {
-        return;
-    }
-
-    const void scaleUniformBy(double factor)  {
-        return;
-    }
-
-    const void rotateBy(Vector3D d)  {
-        return;
-    }
 };
 
 

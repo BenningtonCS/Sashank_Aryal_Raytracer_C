@@ -34,18 +34,6 @@ const double Vector3D::getZ() const{
     return Vector3D::z;
 }
 
-//SETTERS
-void Vector3D::setX(const double x) {
-    Vector3D::x = x;
-}
-
-void Vector3D::setY(const double y) {
-    Vector3D::y = y;
-}
-
-void Vector3D::setZ(const double z) {
-    Vector3D::z = z;
-}
 
 //magnitude
 const double Vector3D::magnitudeSquared() const{

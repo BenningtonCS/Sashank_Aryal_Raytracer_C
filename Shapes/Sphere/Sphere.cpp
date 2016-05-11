@@ -4,6 +4,7 @@
 
 
 #include "Sphere.h"
+#include "../../Algebra/Matrix.h"
 #include <cmath>
 #include <assert.h>
 
@@ -30,6 +31,8 @@ const Vector3D Sphere::getPosition() {
 
 
 const double Sphere::rayIntersectionDistance(Ray r){
+    //Transform the ray into local coordinate
+
     Vector3D L = this->getPosition() - r.getOrigin();
     double t_ca = DotProduct(L, r.getDirection());
     if (t_ca < 0) return -1;
@@ -56,5 +59,4 @@ const Vector3D Sphere::getNormalAt(Vector3D point) {
 const ColorRGB Sphere::getColor() {
     return color;
 }
-
 

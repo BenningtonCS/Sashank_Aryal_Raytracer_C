@@ -25,21 +25,6 @@ public:
 
     const Vector3D getNormalAt(Vector3D point);
 
-    const void translateBy(Vector3D coordinate){
-        return;
-    }
-
-    const void scaleBy(Vector3D coordinate){
-        return;
-    }
-
-    const void scaleUniformBy(double factor) {
-        return;
-    }
-
-    const void rotateBy(Vector3D d) {
-        return;
-    }
 
 
 };
