@@ -27,27 +27,12 @@ namespace Vector {
         const double getZ() const;
         const double getW() const;
 
-        ///////////////////////////////////////////////////////////////////////////
-        /* Returns the square of the magnitude of this vector.
-         more efficient than computing the magnitude itself,and is enough for comparing two vectors to see which
-         is longer or shorter.
-         */
-        const double magnitudeSquared() const;
-        const double magnitude() const;
-        const Vector4D unitVector() const;
     };
 
 
 /* ========================================================================
- * ========================================================================
- * ========================================================================
- * ========================================================================
  * =====================OPERATOR OVERLOADING===============================
- * ========================================================================
- * ========================================================================
- * ========================================================================
- * ========================================================================
- */
+*/
 
 // This + operator now can be used to add two Vector objects.
     inline Vector4D operator+(const Vector4D &a, const Vector4D &b){

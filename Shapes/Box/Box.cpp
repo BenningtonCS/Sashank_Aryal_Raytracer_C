@@ -6,10 +6,9 @@
 #include "../../Algebra/Algebra.h"
 #include "../../Scene/Scene.h"
 
-Box::Box(const Vector3D &minimumExtent, const Vector3D &maximumExtent, ColorRGB color, float ambience):Shape(ambience) {
+Box::Box(const Vector3D &minimumExtent, const Vector3D &maximumExtent, const Material & material):Shape(material) {
     bounds[0] = minimumExtent;
     bounds[1] = maximumExtent;
-    colorOfBox = color;
 }
 
 
@@ -57,7 +56,14 @@ const Vector3D Box::getNormalAt(Vector3D point) {
 }
 
 
-const ColorRGB Box::getColor() {
-    return colorOfBox;
+void Box::setMinBound(const Vector3D &minB) {
+    bounds[0] = minB;
 }
+
+void Box::setMaxBound(const Vector3D &maxB) {
+    bounds[1] = maxB;
+}
+
+
+
 

@@ -5,10 +5,9 @@
 #include "Plane.h"
 
 
-Plane::Plane(Vector3D normalOrientationVector, Vector3D pointOnPlane, ColorRGB colorOfPlane, float ambience):Shape(ambience) {
+Plane::Plane(const Vector3D & normalOrientationVector, const Vector3D & pointOnPlane, const Material & material):Shape(material) {
     this-> normalOrientationVector = normalOrientationVector;
     this->pointOnPlane = pointOnPlane;
-    this->colorOfPlane = colorOfPlane;
 }
 
 
@@ -50,8 +49,4 @@ const Vector3D Plane::getNormalAt(Vector3D point) {
     return normalOrientationVector.unitVector();
 }
 
-
-const ColorRGB Plane::getColor() {
-    return this->colorOfPlane;
-}
 

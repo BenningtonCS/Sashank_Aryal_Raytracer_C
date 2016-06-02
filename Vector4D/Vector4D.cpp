@@ -38,13 +38,5 @@ const double Vector4D::getZ() const{
 const double Vector4D::getW() const{
     return Vector4D::w;
 }
-//magnitude
-const double Vector4D::magnitudeSquared() const{
-    return (x * x) + (y * y) + (z * z);
-}
-
-const double Vector4D::magnitude() const {
-    return sqrt(magnitudeSquared());
-}
 
 

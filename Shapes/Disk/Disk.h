@@ -22,16 +22,13 @@ public:
 
     //Constructor
     Disk(const Vector3D &normalOrientationVector, const Vector3D &centerOfDisk, double radiusOfDisk,
-         const ColorRGB &colorOfDisk, float ambience) : normalOrientationVector(normalOrientationVector), centerOfDisk(centerOfDisk),
-                                        radiusOfDisk(radiusOfDisk), colorOfDisk(colorOfDisk), Shape(ambience) { }
+         const ColorRGB &colorOfDisk, Material material) : normalOrientationVector(normalOrientationVector), centerOfDisk(centerOfDisk),
+                                        radiusOfDisk(radiusOfDisk), Shape(material) { }
 
     const double rayIntersectionDistance(Ray r);
     const Vector3D getNormalAt(Vector3D);
     Vector3D getCenterOfDisk();
     double getRadiusOfDisk();
-    const ColorRGB getColor();
-
-
 };
 
 

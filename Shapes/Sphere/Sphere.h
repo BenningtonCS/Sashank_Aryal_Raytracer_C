@@ -15,17 +15,24 @@ class Sphere: public Shape {                //Class sphere inherits from the abs
 private:
     double radius;
     Vector3D positionCenter;
-    ColorRGB color;
 public:
     //Constructors
     Sphere();
-    Sphere(double radius, Vector3D positionCenter, ColorRGB _color, float ambience);
+    Sphere(const double radius, const Vector3D & positionCenter, const  Material & material);
 
     //Getters and setters
     const double getRadius();
     const Vector3D getPosition();
+
+    void setRadius(double radius) {
+        Sphere::radius = radius;
+    }
+
+    void setPosition(const Vector3D &positionCenter) {
+        Sphere::positionCenter = positionCenter;
+    }
+
     const double rayIntersectionDistance(Ray r);
     const Vector3D getNormalAt(Vector3D point);
-    const ColorRGB getColor();
 };
 #endif //RAYTRACERC_SPHERE_H

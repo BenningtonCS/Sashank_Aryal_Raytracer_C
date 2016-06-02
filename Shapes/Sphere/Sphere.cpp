@@ -8,16 +8,14 @@
 #include <cmath>
 #include <assert.h>
 
-    Sphere::Sphere():Shape(0) {
+Sphere::Sphere():Shape() {
     radius = 1;
     positionCenter = Vector3D(0,0,0);
-        color = ColorRGB(0.5,0.5,0.5,1);
 }
 
-Sphere::Sphere(double radius, Vector3D position, ColorRGB _color, float ambience):Shape(ambience) {
+Sphere::Sphere(const double radius, const Vector3D & position, const Material & material):Shape(material) {
     this-> radius = radius;
     this-> positionCenter = position;
-    this->color = _color;
 }
 
 const double Sphere::getRadius() {
@@ -55,8 +53,4 @@ const Vector3D Sphere::getNormalAt(Vector3D point) {
     return (point - positionCenter).unitVector();
 }
 
-
-const ColorRGB Sphere::getColor() {
-    return color;
-}
 

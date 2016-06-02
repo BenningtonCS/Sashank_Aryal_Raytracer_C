@@ -8,18 +8,6 @@
 
 #define LARGEVALUE 1e10
 
-const int Algebra::getKeyOfLeastValueFromMap(std::map<int, double> myMap) {
-    double min = 10000;
-    int minAt = 0;
-    for (std::map<int, double>::iterator it = myMap.begin(); it!=myMap.end(); ++it){
-        if (it->second < min){
-            min = it->second;
-            minAt = it->first;
-        }
-    }
-    return minAt;
-}
-
 
 const double Algebra::floatDivision(const double a, const double b) {
     if (b == 0){

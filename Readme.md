@@ -16,3 +16,16 @@ This document is still a work in progress.
 3. The camera is modeled as a perspective camera, so you can change its **position** and **lookat**.
 
 4. Anti-aliasing is disabled by default. To enable anti-aliasing, use **useSampling** method of the **Camera** class. 
+
+
+### Update 0.2
+
+1. Triangle shape has been added. 
+
+2. Now you can create multiple test scenes and have objects particular to a scene. Previously, objects container was static and multiple scenes were not allowed. A scene has width, height, camera, objects and lights. 
+
+3. Transformations work. You can rotate, scale and translate objects.
+
+4. Depth of field works.
+
+5. Specular shading has been added. Remember: Specular coeff + diffuse coeff + ambience + reflectivity must be equal to 1.

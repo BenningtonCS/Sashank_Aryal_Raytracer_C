@@ -10,7 +10,6 @@
 
 class Algebra {
 public:
-    static const int getKeyOfLeastValueFromMap(std::map<int, double>  m);
     static const double floatDivision(const double a, const double b);
     static double deg2rad (double degrees);
     static double getRandomBetween(double min, double max);

@@ -8,55 +8,71 @@
 #include "../Vector3D/Vector3D.h"
 #include "../Ray/Ray.h"
 #include "../Algebra/Matrix.h"
+#include "../Algebra/Algebra.h"
+#include "../Material/Material.h"
 
-// Base class
+// Abstract Base class
 class Shape{
-private:
-    void setInverseOfTransformationMatrix(){
-        //Separate ro
-    }
+
 protected:
-    float ambience;
+    Material material;
     Matrix4x4 transformationMatrix;
-    Matrix4x4 inverseOfTransformationMatix;
+    Matrix4x4 inverseOfTransformationMatrix;
 public:
-    Shape(float amb){
-        ambience = amb;
-        setInverseOfTransformationMatrix();
+    Shape(const Material & material){
+        this->material = material;
     }
-    virtual const ColorRGB getColor() = 0;
+
+    Shape(){
+        this->material = Material();
+    }
+
     virtual const double rayIntersectionDistance(Ray r) = 0;      //Distance from the origin of ray(camera) to the point of intersection
     virtual const Vector3D getNormalAt(Vector3D point) = 0;
 
-    const float getAmbience(){
-        return this->ambience;
+    Material getMaterial(){
+        return material;
     }
 
+    const void setMaterial(const Material & material){
+        this->material = material;
+    }
     const void scaleMatrixXYZBy(const Vector3D & vec){
-        transformationMatrix = transformationMatrix.scaleMatrixXYZBy(vec);
-        inverseOfTransformationMatix = inverseOfTransformationMatix.scaleMatrixXYZBy(1 / vec);
-
+        transformationMatrix = getScalingMatrixXYZ(vec) * transformationMatrix;
+        inverseOfTransformationMatrix = inverseOfTransformationMatrix * getScalingMatrixXYZ(1/vec);
     }
 
     const void scaleUniformBy(double factor){
-        //transformationMatrix
+        transformationMatrix = getUniformScalingMatrix(factor) * transformationMatrix;
+        inverseOfTransformationMatrix = inverseOfTransformationMatrix * getUniformScalingMatrix(1/factor);
     }
 
-    const void rotateBy(Vector3D){
+    const void rotateAround_X_By(double angleInDegrees){
+        double angleInRads = Algebra::deg2rad(angleInDegrees);
+        transformationMatrix = getRotatingMatrixAbout_X_Axis(angleInRads) * transformationMatrix;
+        inverseOfTransformationMatrix = inverseOfTransformationMatrix * getRotatingMatrixAbout_X_Axis(-angleInRads);
+    }
 
+    const void rotateAround_Y_By(double angleInDegrees){
+        double angleInRads = Algebra::deg2rad(angleInDegrees);
+        transformationMatrix = getRotatingMatrixAbout_Y_Axis(angleInRads) * transformationMatrix;
+        inverseOfTransformationMatrix = inverseOfTransformationMatrix * getRotatingMatrixAbout_Y_Axis(-angleInRads);
+    }
+
+
+    const void rotateAround_Z_By(double angleInDegrees){
+        double angleInRads = Algebra::deg2rad(angleInDegrees);
+        transformationMatrix = getRotatingMatrixAbout_Z_Axis(angleInRads) * transformationMatrix;
+        inverseOfTransformationMatrix = inverseOfTransformationMatrix * getRotatingMatrixAbout_Z_Axis(-angleInRads);
     }
 
     const void translateBy(Vector3D coordinate) {
-        // Write the transformation matrix
-        Matrix4x4 translationMatrix;
-        translationMatrix.mat[0][3] = coordinate.getX();
-        translationMatrix.mat[1][3] = coordinate.getY();
-        translationMatrix.mat[2][3] = coordinate.getZ();
-        Matrix4x4 inverseOfTranslationMatrix = getInverseOfTranslationMatrix(translationMatrix);
+        transformationMatrix = getTranslatingMatrix(coordinate) * transformationMatrix;
+        inverseOfTransformationMatrix = inverseOfTransformationMatrix * getTranslatingMatrix(-coordinate);
     }
 
     const Matrix4x4 getInverseTransformationMatrix(){
-            return inverseOfTransformationMatix;
+            return inverseOfTransformationMatrix;
     };
 
     const Matrix4x4 getTransformationMatrix(){

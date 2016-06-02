@@ -1,13 +1,12 @@
 //
 // Created by Sashank on 3/9/2016.
 //
-
+#pragma once
 #ifndef RAYTRACERC_LIGHT_H
 #define RAYTRACERC_LIGHT_H
 
 #include "../Vector3D/Vector3D.h"
 #include "../Color/Color.h"
-#include "../Scene/Scene.h"
 
 
 using namespace Vector;
@@ -34,7 +33,7 @@ public:
             this->lightDirection = lightPosition_Direction.unitVector();
         }
         this->colorOfLight = ColorRGB(1,1,1,1);
-        this->intensityOfLight = 0.5;
+        this->intensityOfLight = 1;
     };
 
     Light(TypesOfLight _typeOfLight, Vector3D lightPosition_Direction, double lightIntensity):
@@ -45,7 +44,7 @@ public:
     Light(TypesOfLight _typeOfLight, Vector3D lightPosition_Direction, ColorRGB colorOfLight):
             Light(_typeOfLight, lightPosition_Direction){
         this->colorOfLight = colorOfLight;
-        this->intensityOfLight = 0.5;
+        this->intensityOfLight = 1;
     };
 
     Light(TypesOfLight _typeOfLight, Vector3D lightPosition_Direction, double lightIntensity, ColorRGB colorOfLight)

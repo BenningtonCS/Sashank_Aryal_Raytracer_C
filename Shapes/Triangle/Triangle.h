@@ -17,9 +17,7 @@ private:
     ColorRGB colorOfTriangle;
 
 public:
-    Triangle(const Vector3D &vertexA, const Vector3D &vertexB, const Vector3D &vertexC, ColorRGB &color, float ambience);
-
-    const ColorRGB getColor();
+    Triangle(const Vector3D &vertexA, const Vector3D &vertexB, const Vector3D &vertexC,const Material & material);
 
     const double rayIntersectionDistance(Ray r);
 

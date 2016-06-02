@@ -10,7 +10,7 @@ const double Disk::rayIntersectionDistance(Ray r) {
     //Check if the normal of the disk is parallel to the ray by computing the dot product of ray and normal of disk.
     //They are parallel if the dot product is zero.
     //Perform the test that we did in the plane
-    Plane * p = new Plane(normalOrientationVector,centerOfDisk, ColorRGB(), 0);
+    Plane * p = new Plane(normalOrientationVector,centerOfDisk, Material());
     double diskRayIntersectionDistance = p->rayIntersectionDistance(r);
     if (diskRayIntersectionDistance == -1) {  //if ray does not hit plane of disk
         delete p;
@@ -40,8 +40,5 @@ double Disk::getRadiusOfDisk() {
 }
 
 
-const ColorRGB Disk::getColor() {
-    return colorOfDisk;
-}
 
 

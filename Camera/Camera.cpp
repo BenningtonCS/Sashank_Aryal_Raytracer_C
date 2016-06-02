@@ -1,13 +1,9 @@
 //
 // Created by Sashank on 3/26/2016.
 //
-
-
 #include <cstring>
 #include "Camera.h"
-#include "../Scene/Scene.h"
 #include "../Image/CreateImage.h"
-#include "../Algebra/Algebra.h"
 
 Camera::Camera(const Vector3D &position, const Vector3D &lookAtPoint) {
     this->position = position;
@@ -23,7 +19,6 @@ Camera::Camera(const Vector3D &position, const Vector3D &lookAtPoint) {
     depthOfFieldEnabled = false;
 }
 
-
 Camera::Camera(const Vector3D &position, const Vector3D &lookAtPoint, double fov):
     Camera(position, lookAtPoint) {
         this->fov = fov;
@@ -33,14 +28,19 @@ Vector3D Camera::convertCameraToWorldCoordinates(const Vector3D &point) {
     return ((point.getX() * u + (point.getY() * v) + (point.getZ() * w)));
 }
 
+void Camera::render(const int width, const int height, std::vector<std::shared_ptr<Shape>> shapes, std::vector<std::shared_ptr<Light>> lights) {
+    std::cout << "Rendering scene with "<< shapes.size() << " objects..." << std::endl;
+    std::cout << "Please wait." << std::endl;
 
-void Camera::render(const int width, const int height) {
     heightOfScene = height;
     widthOfScene = width;
+    this->shapes = shapes;
+    this->lights = lights;
+    
     int resolution = width * height;
     ColorRGB *pixels = new ColorRGB[resolution];
     long loopCounter = 0;
-
+    
     std::vector<double> combinationsOfOffSets;
     if (typeOfSampling == SamplingTypes::JITTERED){
         for (int index = 0; index < numberOfSamples; index++){
@@ -50,104 +50,109 @@ void Camera::render(const int width, const int height) {
 
     for (int i = 0; i < width; ++i) {
         for (int j = 0; j < height; ++j) {
-            if (typeOfSampling == SamplingTypes::RANDOM){
-                pixels[loopCounter] = getFinalColorFromRandomSampling(i, j);
-            } else {
-                pixels[loopCounter] = getFinalColorFromJitteredSampling(i , j, combinationsOfOffSets);
-            }
+            pixels[loopCounter] = getFinalColorFromSampling(i, j, combinationsOfOffSets);
             loopCounter++;
         }
     }
     CreateImage::createRasterImage(height, width, "RenderedImage.bmp", pixels);
-    delete [] pixels;      //Release memory
+    std::cout << "Done rendering." <<std::endl;
+    std::cout << "Rendered Image Size: " << width << " x " << height<< std::endl;
+    delete [] pixels;
 }
 
-ColorRGB Camera::getFinalColorFromJitteredSampling(int i, int j, std::vector<double> combinationsOfOffsets){
+ColorRGB Camera::getFinalColorFromSampling(int i, int j, std::vector<double> combinationsOfOffsets){
     ColorRGB finalColor = ColorRGB(0,0,0,0);
     double wCamDir = depthOfFieldEnabled ? focalLength : 1;
     double pixelSize =  tan(Algebra::deg2rad(fov * 0.5)) * wCamDir / (heightOfScene/2);
 
-    for (int multiSamplingLoopIndex = 0 ; multiSamplingLoopIndex < (numberOfSamples * numberOfSamples); multiSamplingLoopIndex++) {
-        double uOffset = combinationsOfOffsets[multiSamplingLoopIndex % numberOfSamples];
-        double vOffset = combinationsOfOffsets[multiSamplingLoopIndex / numberOfSamples];
+    double uOffset = 0;
+    double vOffset = 0;
+
+    for (int multiSamplingLoopIndex = 0 ; multiSamplingLoopIndex < numberOfSamples; multiSamplingLoopIndex++) {
+
+        if (typeOfSampling == JITTERED) {
+            uOffset = combinationsOfOffsets[multiSamplingLoopIndex % numberOfSamples];
+            vOffset = combinationsOfOffsets[multiSamplingLoopIndex / numberOfSamples];
+        } else {
+            double randomNumber = Algebra::getRandomBetween(0,1);
+            uOffset = randomNumber;
+            vOffset = randomNumber;
+        }
 
         double uCamDir = ((i - (widthOfScene / 2)) + (numberOfSamples == 1 ? 0.5 : uOffset)) * pixelSize;
         double vCamDir = (((heightOfScene / 2) - j) + (numberOfSamples == 1 ? 0.5 : vOffset)) * pixelSize;
 
         //Also randomize origin if depth of field has been used
-
         Vector3D camRayOrigin = !depthOfFieldEnabled ? Vector3D() : randomizeOriginXY();
         Vector3D camRayDirection = Vector3D (uCamDir, vCamDir, wCamDir) - camRayOrigin;
 
+        // Convert both origin and direction to world coordinates
         camRayDirection = convertCameraToWorldCoordinates(camRayDirection).unitVector();
         camRayOrigin = convertCameraToWorldCoordinates(camRayOrigin) + getCameraPosition();
 
         Ray r(camRayOrigin, camRayDirection);
-        finalColor = finalColor + getColorFromRay(r);
-    }
-    return finalColor / (numberOfSamples * numberOfSamples);
-}
-
-ColorRGB Camera::getFinalColorFromRandomSampling(int i, int j){
-    ColorRGB finalColor = ColorRGB(0,0,0,0);
-    double zCamDir = (heightOfScene/2) / tan(Algebra::deg2rad(fov * 0.5));
-    for (int k = 0 ; k < numberOfSamples; k++) {
-        //If it is single sampled, then we want to cast ray in the middle of the pixel, otherwise we offset the ray by a random value between 0-1
-        double randomNumber = Algebra::getRandomBetween(0,1);
-        double xCamDir = (i - (widthOfScene / 2)) + (numberOfSamples == 1 ? 0.5 : randomNumber);
-        double yCamDir = ((heightOfScene / 2) - j) + (numberOfSamples == 1 ? 0.5 : randomNumber);
-        Vector3D camRayDirection = convertCameraToWorldCoordinates(Vector3D(xCamDir, yCamDir, zCamDir)).unitVector();
-        Ray r(getCameraPosition(), camRayDirection);
-        finalColor = finalColor + getColorFromRay(r);
+        finalColor = finalColor + getColorFromRay(r, 1);
     }
     return finalColor / numberOfSamples;
 }
 
+ColorRGB Camera::getColorFromRay(const Ray &r, int depth){
 
-ColorRGB Camera::getColorFromRay(const Ray &r){
+    if (depth == MAX_TRACE_DEPTH){
+        return ColorRGB(0,0,0,0);
+    }
     // Render all objects that are inside the shape container
     // If more than one object is hit, the one with the intersection point closer to the observer commands the pixel color,
-    int numberOfObjectsToRender = (int) Scene::shapes.size();
+    int numberOfObjectsToRender = (int) shapes.size();
     int lowestTposition = 0;
 
     double leastValueOfT = 100000000;
     Ray intersectingTransformedRay = r;
     for (int l = 0; l < numberOfObjectsToRender; ++l) {
-        //Convert ray to the new coordinate space
-        Vector3D newRayOrigin = inverseTransformPoint(r.getOrigin(), l);
-        Vector3D newRayDirection = inverseTransformDirection(r.getDirection(), l);
+        //Move the ray from world space to object space
+        Vector3D newRayOrigin = transformPoint(shapes[l]->getInverseTransformationMatrix(), r.getOrigin());
+        Vector3D newRayDirection = transformDirection(shapes[l]->getInverseTransformationMatrix(), r.getDirection());
         Ray newRay(newRayOrigin, newRayDirection);
-        intersectingTransformedRay = newRay;
-        double intersectionDistance = Scene::shapes[l]->rayIntersectionDistance(newRay);
+        double intersectionDistance = shapes[l]->rayIntersectionDistance(newRay);
         if (intersectionDistance > 0.000001 && intersectionDistance < leastValueOfT) {  //0.000001 for accuracy purpose
             leastValueOfT = intersectionDistance;
             lowestTposition = l;
+            intersectingTransformedRay = newRay;
         }
     }
 
     if ( leastValueOfT < 100000000) {
         Vector3D intersectingPosition = intersectingTransformedRay.getOrigin() + leastValueOfT * intersectingTransformedRay.getDirection();
-        //find P in another coordinate system
-        Vector3D realIntersectingPosition = Scene::shapes[lowestTposition]->getTransformationMatrix() * intersectingPosition;
-        return getColorAt(realIntersectingPosition, lowestTposition);
+        //find P in world-coordinate space
+        Vector3D realIntersectingPosition = transformPoint(shapes[lowestTposition]->getTransformationMatrix(), intersectingPosition);
+        return getColorAt(realIntersectingPosition, lowestTposition, depth) / (depth);
     }
     return ColorRGB();
 }
 
-ColorRGB Camera::getColorAt(const Vector3D &intersectionPosition, int indexOfIntersectionPosition) {
+ColorRGB Camera::getColorAt(const Vector3D &intersectionPosition, int indexOfIntersectionPosition, int depth) {
+
+    //Base case
+    if (depth == MAX_TRACE_DEPTH)
+        return ColorRGB(0,0,0,0);
+
     ColorRGB finalColor(0,0,0,0);
-    ColorRGB colorOfObject = Scene::shapes[indexOfIntersectionPosition]->getColor();
-    for (int i = 0; i < Scene::lights.size(); i++) {
+    ColorRGB colorOfObject = shapes[indexOfIntersectionPosition]->getMaterial().getColor();
+    for (int i = 0; i < lights.size(); i++) {
         bool isShadowed = false;
         double distanceBetweenLightAndObject = 10000000000;
-        if (Scene::lights[i]->getLightType() == TypesOfLight::POINTLIGHT)
-            distanceBetweenLightAndObject = std::abs((Scene::lights[i]->getLightPosition() - intersectionPosition).magnitude());
-        Vector3D directionOfLight = Scene::lights[i]->getLightDirection(intersectionPosition);
-        // /calculate shadows
-        Ray shadowRay(intersectionPosition, directionOfLight);
-        for (int j = 0; j < Scene::shapes.size(); j++){
+        if (lights[i]->getLightType() == TypesOfLight::POINTLIGHT)
+            distanceBetweenLightAndObject = std::abs((lights[i]->getLightPosition() - intersectionPosition).magnitude());
+        Vector3D directionOfLight = lights[i]->getLightDirection(intersectionPosition);
+
+        for (int j = 0; j < shapes.size(); j++){
+            // /calculate shadows
+            Vector3D newIntersectionPosition = transformPoint(shapes[j]->getInverseTransformationMatrix(), intersectionPosition);
+            Vector3D newDirection = transformDirection(shapes[j]->getInverseTransformationMatrix(), directionOfLight);
+
+            Ray shadowRay(newIntersectionPosition, newDirection);
             if (j == indexOfIntersectionPosition) continue;                             // Ignore what happens later because we do not want the shape to cast shadow onto itself
-            double t = Scene::shapes[j]->rayIntersectionDistance(shadowRay);
+            double t = shapes[j]->rayIntersectionDistance(shadowRay);
             if (t > 0.000001 && distanceBetweenLightAndObject >= t){
                 isShadowed = true;
                 break;
@@ -156,43 +161,76 @@ ColorRGB Camera::getColorAt(const Vector3D &intersectionPosition, int indexOfInt
         }
         if (isShadowed) continue;                                   // Check if the other light falls on the currently shadowed reason
                                                                     // , in which case I'd not want a shadow
-        float diffuseReflectance = 1 - Scene::shapes[indexOfIntersectionPosition]->getAmbience();
-        Vector3D normalAtIntersectionPosition = Scene::shapes[indexOfIntersectionPosition]->getInverseTransformationMatrix() * Scene::shapes[indexOfIntersectionPosition]->getNormalAt(intersectionPosition);
-        ColorRGB colorOfCurrentLight = Scene::lights[i]->getColorOfLight();
-        double intensityOfCurrentLight = Scene::lights[i]->getLightIntensity();
-        double cosineAngle = DotProduct(normalAtIntersectionPosition, directionOfLight);
-        if (cosineAngle < 0) cosineAngle = 0;
-        double factor = diffuseReflectance * intensityOfCurrentLight * cosineAngle;
-        finalColor = finalColor + (factor * colorOfObject * colorOfCurrentLight);
+
+        Vector3D intersectionPositionInIntersectedObjectSpace = transformPoint(shapes[indexOfIntersectionPosition]->getInverseTransformationMatrix(),
+                                                                               intersectionPosition);
+        Vector3D normalAtIntersectionPosition = transformDirection(shapes[indexOfIntersectionPosition]->getInverseTransformationMatrix().transposeMatrix(),
+                                                                   shapes[indexOfIntersectionPosition]->getNormalAt(intersectionPositionInIntersectedObjectSpace));
+        ColorRGB colorOfCurrentLight = lights[i]->getColorOfLight();
+        double intensityOfCurrentLight = lights[i]->getLightIntensity();
+
+        //SPECULAR SHADING
+        Vector3D vertexToEye = (getCameraPosition() - intersectionPosition).unitVector();
+        Vector3D reflectedLightDir = getReflectedLightDirection(normalAtIntersectionPosition, -directionOfLight);
+        double specularFactor = DotProduct(vertexToEye, reflectedLightDir);
+        if (specularFactor < 0) {
+            specularFactor = 0;
+        }
+
+        //Specular power is about how big the specular reflection is
+        specularFactor = pow(specularFactor, shapes[indexOfIntersectionPosition]->getMaterial().getSpecularPower());
+        specularFactor *= shapes[indexOfIntersectionPosition]->getMaterial().getSpecularCoeff();
+
+
+        //DIFFUSE SHADING
+        double diffuseFactor = DotProduct(normalAtIntersectionPosition, directionOfLight);
+        if (diffuseFactor < 0) {
+            diffuseFactor = 0;
+        }
+        diffuseFactor *= shapes[indexOfIntersectionPosition]->getMaterial().getDiffuseCoefficient();
+
+        double sumOfFactors = diffuseFactor + specularFactor;
+
+        if (sumOfFactors + shapes[indexOfIntersectionPosition]->getMaterial().getAmbience() > 1)
+            sumOfFactors = 1;
+
+        //REFLECTION
+        ColorRGB reflectedRayColor;
+        if (shapes[indexOfIntersectionPosition]->getMaterial().isReflective && depth < MAX_TRACE_DEPTH) {
+            Ray reflectedRay(intersectionPosition, reflectedLightDir);
+            reflectedRayColor = getColorFromRay(reflectedRay, depth + 1);
+        }
+
+        finalColor = finalColor + shapes[indexOfIntersectionPosition]->getMaterial().getReflectivity() * reflectedRayColor + (sumOfFactors * intensityOfCurrentLight * colorOfObject  * colorOfCurrentLight);
     }
-    return  finalColor + Scene::shapes[indexOfIntersectionPosition]->getAmbience() * colorOfObject;
+    return  finalColor + shapes[indexOfIntersectionPosition]->getMaterial().getAmbience() * colorOfObject;
 }
 
-
-Vector3D Camera::inverseTransformPoint(const Vector3D &point, int shapeIndex) {
-    return Scene::shapes[shapeIndex]->getInverseTransformationMatrix() * point;
+Vector3D Camera::transformPoint(const Matrix4x4 &tm, const Vector3D &point) {
+    Vector4D pointIn4D = Vector4D(point.getX(), point.getY(), point.getZ(), 1);
+    Vector4D transformedPoint = tm * pointIn4D;
+    return Vector3D(transformedPoint.getX(), transformedPoint.getY(), transformedPoint.getZ());
 }
 
-Vector3D Camera::inverseTransformDirection(const Vector3D &direction, int shapeIndex) {
-    return Scene::shapes[shapeIndex]->getInverseTransformationMatrix() * direction;
+Vector3D Camera::transformDirection(const Matrix4x4 &tm, const Vector3D &direction) {
+    Vector4D directionIn4D = Vector4D(direction.getX(), direction.getY(),direction.getZ(), 0);
+    Vector4D transformedPoint = tm * directionIn4D;
+    return Vector3D(transformedPoint.getX(), transformedPoint.getY(), transformedPoint.getZ()).unitVector();
 }
-
 
 Vector3D Camera::getCameraPosition() {
     return position;
 }
 
-
 void Camera::useSampling(SamplingTypes typeOfSampling, int numberOfSamples) {
     this->typeOfSampling = typeOfSampling;
-    this->numberOfSamples = numberOfSamples;
+    this->numberOfSamples = typeOfSampling == JITTERED ? numberOfSamples * numberOfSamples : numberOfSamples;
 }
 
-
 void Camera::useDepthOfField(double apertureSize, const Vector3D& focalPoint) {
-    this->apertureRadius = apertureSize;
-    this->focalLength = (focalPoint - getCameraPosition()).magnitude();
-    this->depthOfFieldEnabled = true;
+    apertureRadius = apertureSize;
+    focalLength = (focalPoint - getCameraPosition()).magnitude();
+    depthOfFieldEnabled = true;
 }
 
 Vector3D Camera::randomizeOriginXY() {
@@ -205,4 +243,12 @@ Vector3D Camera::randomizeOriginXY() {
     double xComponent = randomRadius * cosineOfRandomAngle;
     double yComponent = randomRadius * sineOfRandomAngle;
     return Vector3D(xComponent, yComponent, 0);
+}
+
+Vector3D Camera::getReflectedLightDirection(const Vector3D & normal, const Vector3D & incidentLightDirection) {
+    return (incidentLightDirection  - 2 * DotProduct(normal, incidentLightDirection) * normal).unitVector();
+}
+
+void Camera::setMaxDepth(int maxDepth) {
+    this->MAX_TRACE_DEPTH = maxDepth;
 }
