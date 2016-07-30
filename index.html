@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>3D Raytracer in C++ by BenningtonCS</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>3D Raytracer in C++</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          <a href="https://github.com/BenningtonCS/Sashank_Aryal_Raytracer_C/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/BenningtonCS/Sashank_Aryal_Raytracer_C/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/BenningtonCS/Sashank_Aryal_Raytracer_C" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="raytracer-in-c" class="anchor" href="#raytracer-in-c" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Raytracer in C++</h1>
+
+<h1>
+<a id="this-document-is-a-wip" class="anchor" href="#this-document-is-a-wip" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>This document is a WIP</h1>
+
+<p>This document is still a work in progress. </p>
+
+<h3>
+<a id="update-01" class="anchor" href="#update-01" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 0.1</h3>
+
+<p><em>So far, this raytracer has the following abilities:</em></p>
+
+<ol>
+<li><p>You can add shapes like spheres, Axis Aligned Bounding Boxes(AABBs), discs or planes in your scene. Add a new object in <strong>initializeObjects()</strong> method inside <strong>main.cpp</strong>.</p></li>
+<li><p>You can add two types of lights, point lights and directional lights. You can have as many lights as you want in the scene. Add a new light in <strong>initializeLights()</strong> method inside <strong>main.cpp</strong>.</p></li>
+<li><p>The camera is modeled as a perspective camera, so you can change its <strong>position</strong> and <strong>lookat</strong>.</p></li>
+<li><p>Anti-aliasing is disabled by default. To enable anti-aliasing, use <strong>useSampling</strong> method of the <strong>Camera</strong> class. </p></li>
+</ol>
+
+<h3>
+<a id="update-02" class="anchor" href="#update-02" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update 0.2</h3>
+
+<ol>
+<li><p>Triangle shape has been added. </p></li>
+<li><p>Now you can create multiple test scenes and have objects particular to a scene. Previously, objects container was static and multiple scenes were not allowed. A scene has width, height, camera, objects and lights. </p></li>
+<li><p>Transformations work. You can rotate, scale and translate objects.</p></li>
+<li><p>Depth of field works.</p></li>
+<li><p>Specular shading has been added. Remember: Specular coeff + diffuse coeff + ambience + reflectivity must be equal to 1.</p></li>
+</ol>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
